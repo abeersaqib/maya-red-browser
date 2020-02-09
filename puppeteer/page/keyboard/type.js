@@ -9,11 +9,21 @@ module.exports = function(RED) {
     //modifying code here
     this.on("input", function(msg) {
       // console.log(this.payloadType, this.payload);
+      var globalContext = this.context().global;
+      let puppeteer = globalContext.get("puppeteer");
+
       if (this.payloadType === "str") {
         try {
           // msg.payload = res;
-          msg.puppeteer.page.keyboard.type(this.payload).then(() => {
+          node.status({
+            fill: "yellow",
+            shape: "dot",
+            text: "typing: " + this.payload.toString().substring(0, 10) + "..."
+          });
+          puppeteer.page.keyboard.type(this.payload).then(() => {
+            globalContext.set("puppeteer", puppeteer);
             node.send(msg);
+            node.status({});
           });
         } catch (err) {
           this.error(err, msg);
@@ -30,9 +40,25 @@ module.exports = function(RED) {
             } else {
               console.log("Success:", err, res);
               // msg.payload = res;
-              msg.puppeteer.page.keyboard.type(res).then(() => {
-                node.send(msg);
+              node.status({
+                fill: "yellow",
+                shape: "dot",
+                text: "typing: " + res.toString().substring(0, 10) + "..."
               });
+              puppeteer.page.keyboard
+                .type(res)
+                .then(() => {
+                  globalContext.set("puppeteer", puppeteer);
+                  node.send(msg);
+                  node.status({});
+                })
+                .catch(err => {
+                  node.status({
+                    fill: "red",
+                    shape: "ring",
+                    text: "error: " + err.toString().substring(0, 10) + "..."
+                  });
+                });
             }
           }
         );
