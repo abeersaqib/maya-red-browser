@@ -1,3 +1,7 @@
+const { getValue } = require("../pageutils/getValue");
+const {
+  highlightElement,
+} = require("maya-red-browser/puppeteer/pageutils/highlightelem");
 module.exports = function (RED) {
   function PuppeteerPageClick(config) {
     RED.nodes.createNode(this, config);
@@ -6,62 +10,38 @@ module.exports = function (RED) {
     var node = this;
 
     // Retrieve the config node
-    this.on("input", function (msg) {
+    this.on("input", async function (msg) {
       var data = msg.data;
+
+      var globalContext = this.context().global;
+      let puppeteer = globalContext.get("puppeteer");
+      let selector = await getValue(
+        this.selector,
+        this.payloadTypeSelector,
+        msg,
+        RED
+      );
       node.status({
         fill: "yellow",
         shape: "dot",
-        text: "clicking: " + node.selector.toString().substring(0, 10) + "..."
+        text: "clicking: " + selector.toString().substring(0, 10) + "...",
       });
-      var globalContext = this.context().global;
-      let puppeteer = globalContext.get("puppeteer");
-      if (this.payloadTypeSelector === "str") {
-        puppeteer.page
-          .click(node.selector)
-          .then(() => {
-            globalContext.set("puppeteer", puppeteer);
-            node.send(msg);
-            node.status({});
-          })
-          .catch(err => {
-            node.error(err);
-            node.status({
-              fill: "red",
-              shape: "ring",
-              text: "error: " + err.toString().substring(0, 10) + "..."
-            });
+      highlightElement(puppeteer.page, selector, "click");
+      puppeteer.page
+        .click(selector)
+        .then(() => {
+          globalContext.set("puppeteer", puppeteer);
+          node.send(msg);
+          node.status({});
+        })
+        .catch((err) => {
+          node.error(err);
+          node.status({
+            fill: "red",
+            shape: "ring",
+            text: "error: " + err.toString().substring(0, 10) + "...",
           });
-      } else {
-        var selector;
-        RED.util.evaluateNodeProperty(
-          this.selector,
-          this.payloadTypeSelector,
-          this,
-          msg,
-          function (err, res) {
-            if (err) {
-              node.error(err.msg);
-            } else {
-              selector = res;
-            }
-          }
-        );
-        puppeteer.page
-          .click(selector)
-          .then(() => {
-            globalContext.set("puppeteer", puppeteer);
-            node.send(msg);
-            node.status({});
-          })
-          .catch(err => {
-            node.error(err);
-            node.status({
-              fill: "red",
-              shape: "ring",
-              text: "error: " + err.toString().substring(0, 10) + "..."
-            });
-          });
-      }
+        });
     });
     oneditprepare: function oneditprepare() {
       $("#node-input-name").val(this.name);
