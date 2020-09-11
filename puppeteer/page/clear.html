@@ -1,40 +1,40 @@
 <script type="text/javascript">
-    RED.nodes.registerType('puppeteer-page-clear', {
-      category: 'puppeteerpage',
-      color: '#8BBDD9',
-      defaults: {
-        name: { value: '' },
-        selector:  {value:"", validate: RED.validators.typedInput("payloadTypeSelector")},
-        payloadTypeSelector: {value:"global"},
-      },
-      inputs:1,
-      outputs:1,
-      icon: "fa-file-code-o.png",
-      label: function() {
-          return this.name || "clear";
-      },
-      paletteLabel: "clear",
-      oneditprepare: function() {
-          //selector logic
-            if (this.payloadTypeSelector === null) {
-                if (this.selector === "") {
-                    this.payloadTypeSelector = "date";
-                } else {
-                    this.payloadTypeSelector = "str";
-                }
-            } else if (this.payloadTypeSelector === 'string' || this.payloadTypeSelector === 'none') {
-                this.payloadTypeSelector = "str";
-            }
-            $("#node-input-payloadTypeSelector").val(this.payloadTypeSelector);
-            $("#node-input-selector").typedInput({
-                default: 'str',
-                typeField: $("#node-input-payloadTypeSelector"),
-                types:['flow','global','msg','str']
-            });
+  RED.nodes.registerType('puppeteer-page-clear', {
+    category: 'puppeteerpage',
+    color: '#8BBDD9',
+    defaults: {
+      name: { value: '' },
+      selector:  {value:"", validate: RED.validators.typedInput("payloadTypeSelector")},
+      payloadTypeSelector: {value:"global"},
+    },
+    inputs:1,
+    outputs:1,
+    icon: "fa-file-code-o.png",
+    label: function() {
+        return this.name || "clear";
+    },
+    paletteLabel: "clear",
+    oneditprepare: function() {
+        //selector logic
+          if (this.payloadTypeSelector === null) {
+              if (this.selector === "") {
+                  this.payloadTypeSelector = "date";
+              } else {
+                  this.payloadTypeSelector = "str";
+              }
+          } else if (this.payloadTypeSelector === 'string' || this.payloadTypeSelector === 'none') {
+              this.payloadTypeSelector = "str";
+          }
+          $("#node-input-payloadTypeSelector").val(this.payloadTypeSelector);
+          $("#node-input-selector").typedInput({
+              default: 'str',
+              typeField: $("#node-input-payloadTypeSelector"),
+              types:['flow','global','msg','str']
+          });
 
-            $("#node-input-selector").typedInput('type',this.payloadTypeSelector);
-      }
-    });
+          $("#node-input-selector").typedInput('type',this.payloadTypeSelector);
+    }
+  });
 </script>
 
 <script type="text/x-red" data-template-name="puppeteer-page-clear">

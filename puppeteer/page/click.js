@@ -1,7 +1,6 @@
 const { getValue } = require("../pageutils/getValue");
-const {
-  highlightElement,
-} = require("maya-red-browser/puppeteer/pageutils/highlightelem");
+const { highlightElement } = require("../pageutils/highlightelem");
+
 module.exports = function (RED) {
   function PuppeteerPageClick(config) {
     RED.nodes.createNode(this, config);

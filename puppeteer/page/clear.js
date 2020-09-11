@@ -1,4 +1,5 @@
 const { getValue } = require("../pageutils/getValue");
+
 module.exports = function (RED) {
   function PuppeteerPageClear(config) {
     RED.nodes.createNode(this, config);
@@ -7,8 +8,7 @@ module.exports = function (RED) {
     var node = this;
 
     // Retrieve the config node
-    this.on("input", function (msg) {
-      var data = msg.data;
+    this.on("input", async function (msg) {
       node.status({
         fill: "yellow",
         shape: "dot",

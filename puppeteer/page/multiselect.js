@@ -5,7 +5,7 @@ module.exports = function (RED) {
     const arraySelect = require("../pageutils/arrayselect");
     const {
       highlightElem,
-    } = require("maya-red-browser/puppeteer/pageutils/highlightelem");
+    } = require("../pageutils/highlightelem");
     RED.nodes.createNode(this, config);
     this.selector1 = config.selector1;
     this.selector2 = config.selector2;
