@@ -44,7 +44,15 @@
       } else if (this.payloadTypeProperty === 'string' || this.payloadTypeProperty === 'none') {
           this.payloadTypeProperty = "str";
       }
-      }
+        $("#node-input-payloadTypeProperty").val(this.payloadTypeProperty);
+        $("#node-input-property").typedInput({
+            default: 'str',
+            typeField: $("#node-input-payloadTypeProperty"),
+            types:['flow','global','msg','str']
+        });
+
+        $("#node-input-property").typedInput('type',this.payloadTypeProperty);
+    }
     });
 </script>
 

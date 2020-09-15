@@ -16,7 +16,7 @@ module.exports = function(RED) {
       puppeteer.browser
         .close()
         .then(() => {
-          globalContext.set("puppeteer", puppeteer);
+          globalContext.set("puppeteer", null);
           node.send(msg);
           node.status({});
         })
