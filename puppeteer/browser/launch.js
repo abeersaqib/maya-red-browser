@@ -26,7 +26,7 @@ module.exports = function (RED) {
       });
     }
     async function startBrowser(globalContext, msg) {
-      let wsEndpoint = await startBrowserAndGetWsEndpoint();
+      let wsEndpoint = await startBrowserAndGetWsEndpoint(this.headless);
       await puppeteer
         .connect({
           browserWSEndpoint: wsEndpoint,
