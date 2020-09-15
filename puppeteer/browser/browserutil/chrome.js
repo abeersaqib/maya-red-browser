@@ -8,8 +8,13 @@ browser_extract_linux = "chrome-linux/chrome"
 browser_extract_win = "chrome-win\\chrome.exe" 
 const browser = platform === "darwin" ? homedir+"/.maya/bin/"+browser_extract_mac : platform === "win32" ? homedir+"\\.maya\\bin\\"+browser_extract_win: homedir+"/.maya/bin/"+browser_extract_linux;
 
-const chrome = async () => {
-  await open("", { app: [browser, '--remote-debugging-port=9222', '--no-first-run', '--no-default-browser-check'] });
+const chrome = async (headless) => {
+  if(headless){
+    await open("", { app: [browser, '--remote-debugging-port=9222', '--no-first-run', '--no-default-browser-check', '--headless'] });
+  } else {
+    await open("", { app: [browser, '--remote-debugging-port=9222', '--no-first-run', '--no-default-browser-check'] });
+  }
+  
   return await new Promise(r => setTimeout(r, 1000))
 };
 

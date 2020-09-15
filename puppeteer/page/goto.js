@@ -8,17 +8,16 @@ module.exports = function (RED) {
 
     // Retrieve the config node
     this.on("input", async function (msg) {
+      
+      var globalContext = this.context().global;
+      let puppeteer = globalContext.get("puppeteer");
+      let url = await getValue(this.url, this.payloadTypeUrl, msg, RED);
       node.status({
         fill: "yellow",
         shape: "dot",
         text:
-          "going to: " + node.url !== ""
-            ? node.url.toString().substring(0, 15)
-            : msg.url.toString().substring(0, 15) + "...",
+          "going to: "+url+"...",
       });
-      var globalContext = this.context().global;
-      let puppeteer = globalContext.get("puppeteer");
-      let url = await getValue(this.url, this.payloadTypeUrl, msg);
       puppeteer.page
         .goto(url)
         .then(() => {
