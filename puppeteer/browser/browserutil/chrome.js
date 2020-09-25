@@ -23,7 +23,7 @@ const getWsUrl = async() => {
     var response = await axios.get('http://localhost:9222/json/version');
     return response;
   } catch (error) {
-    new Promise(r => setTimeout(getWsUrl, 1000))
+    new Promise(r => setTimeout(getWsUrl, 5000))
   }
 };
 
