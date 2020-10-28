@@ -60,10 +60,27 @@ module.exports = function (RED) {
       });
       var checkPuppeteer = globalContext.get("puppeteer");
       if (checkPuppeteer) {
-        function restartBrowser(){
-          startBrowser(globalContext, msg);
+        async function killBrowser(){
+          checkPuppeteer.browser
+          .close()
+          .then(() => {
+            globalContext.set("puppeteer", null);
+            node.send(msg);
+            node.status({
+              fill: "red",
+              shape: "dot",
+              text:"browser disconnected"
+            });
+          })
+          .catch(err => {
+            node.status({
+              fill: "red",
+              shape: "ring",
+              text: "error: " + err.toString().substring(0, 10) + "..."
+            });
+          });
         }
-        checkPuppeteer.browser.on("disconnected", restartBrowser);
+        checkPuppeteer.browser.on("disconnected", killBrowser);
         globalContext.set("puppeteer", { browser: checkPuppeteer.browser });
         node.send(msg);
         node.status({

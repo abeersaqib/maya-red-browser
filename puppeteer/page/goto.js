@@ -19,7 +19,9 @@ module.exports = function (RED) {
           "going to: "+url+"...",
       });
       puppeteer.page
-        .goto(url)
+        .goto(url, {
+          waitUntil: "networkidle2"
+        })
         .then(() => {
           globalContext.set("puppeteer", puppeteer);
           node.send(msg);
