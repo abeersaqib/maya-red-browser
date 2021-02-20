@@ -48,6 +48,8 @@
       "maya-browser-click": "puppeteer/extension/click.js",
       "maya-browser-type": "puppeteer/extension/type.js",
       "maya-browser-clear": "puppeteer/extension/clear.js",
+      "maya-browser-find-tab": "puppeteer/extension/findTab.js",
+      "maya-browser-navigate": "puppeteer/extension/navigate.js",
       "puppeteer-page-multiselect": "puppeteer/page/multiselect.js"
     }
   }

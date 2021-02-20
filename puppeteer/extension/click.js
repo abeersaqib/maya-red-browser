@@ -1,14 +1,19 @@
 module.exports = function (RED) {
   function MayaBrowserClick(config) {
     RED.nodes.createNode(this, config);
+    
     this.selector = config.selector;
     this.payloadTypeSelector = config.payloadTypeSelector;
     this.timeout = config.timeout;
     this.selectorType = config.selectorType;
+    this.tabId = config.tabId;
+    this.payloadTypeTabId = config.payloadTypeTabId;
+
     var node = this;
 
     // Retrieve the config node
     this.on("input", async function (msg) {
+      console.log('CLICKED', node)
       node.status({
         fill: "yellow",
         shape: "dot",
@@ -36,6 +41,7 @@ module.exports = function (RED) {
           }
         });
       }
+
       var globalContext = this.context().global;
       let maya = globalContext.get("maya");
       let clickSelector = await getValue(
@@ -43,8 +49,16 @@ module.exports = function (RED) {
         this.payloadTypeSelector,
         msg
       );
+      let tabId = await getValue(this.tabId, this.payloadTypeTabId, msg);
+      console.log('TAB ID', tabId);
+
       maya.browser.page
-        .click(this.selectorType, clickSelector, this.timeout)
+        .click({
+          selectorType: this.selectorType,
+          selector: clickSelector,
+          timeout: this.timeout,
+          tabId: tabId
+        })
         .then(async () => {
           await globalContext.set("maya", maya);
           node.send(msg);

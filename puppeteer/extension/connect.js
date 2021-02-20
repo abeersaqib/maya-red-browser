@@ -2,12 +2,14 @@ const controlServer = process.env.BROWSER_CONTROL ? process.env.BROWSER_CONTROL 
 
 const APIFetch = require("./utils/api");
 const { v4: uuidv4 } = require("uuid");
+const { Resolver } = require("dns");
 
 class BrowserPage {
   constructor(serverUrl) {
     this.serverUrl = serverUrl;
     this.id = uuidv4();
   }
+
   async goto(url, timeout) {
     return new Promise((resolve, reject) => {
       APIFetch(this.serverUrl + "/api", "post", {
@@ -24,13 +26,15 @@ class BrowserPage {
         });
     });
   }
-  async click(selectorType, selector, timeout) {
+
+  async click({ selectorType, selector, timeout, tabId = null }) {
     return new Promise((resolve, reject) => {
       APIFetch(this.serverUrl + "/api", "post", {
         type: "click",
         payload: {
           selector: selector,
           selectorType: selectorType || "querySelector",
+          tabId: tabId
         },
         timeout: timeout || 1000,
       })
@@ -43,6 +47,7 @@ class BrowserPage {
         });
     });
   }
+
   async type(selectorType, selector, text, timeout) {
     return new Promise((resolve, reject) => {
       APIFetch(this.serverUrl + "/api", "post", {
@@ -63,6 +68,7 @@ class BrowserPage {
         });
     });
   }
+
   async prompt(selectorType, selector, prompt, event, timeout) {
     return new Promise((resolve, reject) => {
       APIFetch(this.serverUrl + "/api", "post", {
@@ -93,6 +99,45 @@ class Browser {
   }
   async newPage() {
     return new BrowserPage(this.serverUrl);
+  }
+
+  async findTab(query, timeout) {
+    return new Promise((resolve, reject) => {
+      APIFetch(this.serverUrl + "/api", "post", {
+        type: "findTab",
+        payload: { query },
+        timeout: timeout || 2000
+      })
+        .then((result) => {
+          console.log("FindTab:", result.data)
+          resolve(result)
+        })
+        .catch(({ response }) => {
+          reject(response)
+        })
+    })
+  }
+
+  async navigate({ tabId, url, timeout }) {
+    return new Promise((resolve, reject) => {
+      const payload = { url }
+      if (tabId) {
+        payload.tabId = tabId
+      }
+
+      APIFetch(this.serverUrl + "/api", "post", {
+        type: "navigate",
+        payload: payload,
+        timeout: timeout || 2000
+      })
+        .then((result) => {
+          console.log('Navigate:', result.data)
+          resolve(result)
+        })
+        .catch(({ response }) => {
+          reject(response)
+        })
+    })
   }
 }
 
