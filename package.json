@@ -4,12 +4,13 @@
   "description": "A fork from Oliver Lorenz's node-red-contrib-puppeteer repo with some extra sauce. Allows controlling headless chrome from NodeRED. For original repo head over to https://github.com/oliverlorenz/node-red-contrib-puppeteer \n",
   "main": "index.js",
   "scripts": {},
-  "author": "Shubham Mishra <shubham.root@gmail.com>",
+  "author": "Muhammad Abeer <abeersaqib@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "axios": "^0.19.2",
     "open": "^7.1.0",
-    "puppeteer-core": "^5.2.1",
+    "puppeteer": "8.0.0",
+    "puppeteer-extra": "3.1.18",
     "uuid": "^8.3.0"
   },
   "bugs": {
