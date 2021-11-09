@@ -4,12 +4,11 @@ module.exports = function (RED) {
   function PuppeteerBrowserLaunch(config) {
     const BROWSER_PATH = process.env.MAYA_BROWSER_PATH;
     RED.nodes.createNode(this, config);
-    this.headless = config.headless == "1" ? true : false;
+    this.headless = config.headless;
     this.slowMo = config.slowMo;
     this.name = config.name;
     var node = this;
     //this.log = console.log;
-    const { startBrowserAndGetWsEndpoint } = require("./browserutil/startBrowser");
     node.status({
       fill: "red",
       shape: "dot",
@@ -28,10 +27,16 @@ module.exports = function (RED) {
     }
     async function startBrowser(globalContext, msg) {
       //let wsEndpoint = await startBrowserAndGetWsEndpoint(this.headless);
-        await puppeteer.launch({
-          defaultViewport: null,
-          headless:this.headless       
-        })
+
+        let payload = msg.payload || {};
+
+        let _options = {
+          headless: payload.headless || false,
+          args: payload.args || [],
+        }
+
+
+        await puppeteer.launch(_options)
         .then((browser) => {
           this.browser = browser;
           this.browser.on("disconnected", setGlobalContextNull)
