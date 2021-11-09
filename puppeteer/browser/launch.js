@@ -1,4 +1,4 @@
-const puppeteer = require("puppeteer-core");
+const puppeteer = require("puppeteer-extra");
 
 module.exports = function (RED) {
   function PuppeteerBrowserLaunch(config) {
@@ -8,6 +8,7 @@ module.exports = function (RED) {
     this.slowMo = config.slowMo;
     this.name = config.name;
     var node = this;
+    //this.log = console.log;
     const { startBrowserAndGetWsEndpoint } = require("./browserutil/startBrowser");
     node.status({
       fill: "red",
@@ -26,11 +27,10 @@ module.exports = function (RED) {
       });
     }
     async function startBrowser(globalContext, msg) {
-      let wsEndpoint = await startBrowserAndGetWsEndpoint(this.headless);
-      await puppeteer
-        .connect({
-          browserWSEndpoint: wsEndpoint,
-          defaultViewport: null
+      //let wsEndpoint = await startBrowserAndGetWsEndpoint(this.headless);
+        await puppeteer.launch({
+          defaultViewport: null,
+          headless:this.headless       
         })
         .then((browser) => {
           this.browser = browser;
@@ -44,7 +44,7 @@ module.exports = function (RED) {
           });
         })
         .catch((err) => {
-          this.log(err);
+          console.log(err);
           node.status({
             fill: "red",
             shape: "ring",
